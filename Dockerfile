@@ -10,6 +10,7 @@ COPY package.json package-lock.json ./
 # Stap 3: Installeer afhankelijkheden
 RUN npm install
 
+
 # Stap 4: Kopieer de rest van de applicatie code
 COPY . .
 
