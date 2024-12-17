@@ -27,7 +27,7 @@ WORKDIR ./
 COPY --from=builder /package.json ./
 COPY --from=builder /package-lock.json ./
 COPY --from=builder /node_modules ./node_modules
-COPY --from=builder /.next ./.next
+COPY --from=builder /app/build /usr/share/nginx/html
 
 
 # Stel de omgeving in op productie
