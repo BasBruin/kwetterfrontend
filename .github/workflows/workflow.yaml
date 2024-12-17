@@ -3,7 +3,7 @@ name: google-cloud-pipeline
 on: 
   push: 
     branches: 
-    - main
+    - master
 jobs:
 
   build-frontend:
