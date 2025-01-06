@@ -8,11 +8,12 @@ const App = () => {
   return (
     <Router>
       <nav>
-        <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
+        <Link to="/login">Login</Link> | <Link to="/register">Register</Link> | <Link to="/privacy">Privacy</Link>
       </nav>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/privacy" element={<PrivacyNotice />} /> {/* Privacy Notice Route */}
       </Routes>
     </Router>
   );
@@ -30,7 +31,7 @@ const Login = () => {
       const response = await axios.post(
         `${API_BASE_URL}/login`, 
         { email, password }, 
-        { withCredentials: true } // Tegen XSS aanval | Je kan hier niet bij via de javascript
+        { withCredentials: true }
       );
       alert("Login succesvol!");
       navigate("/");
@@ -75,16 +76,21 @@ const Login = () => {
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [consent, setConsent] = useState(false);  // Consent state
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmitRegister = async (e) => {
     e.preventDefault();
+    if (!consent) {
+      setError("Je moet akkoord gaan met onze privacyverklaring.");
+      return;
+    }
     try {
       const response = await axios.post(
         `${API_BASE_URL}/register`, 
-        { email, password }, 
-        { withCredentials: true } // Send the cookie with the request
+        { email, password, consent },  // Include consent in the request
+        { withCredentials: true }
       );
       alert("Registratie succesvol!");
       navigate("/login");
@@ -119,9 +125,32 @@ const Register = () => {
             required 
           />
         </div>
+        <div>
+          <input
+            type="checkbox"
+            checked={consent}
+            onChange={(e) => setConsent(e.target.checked)}
+            required
+          />
+          <label>
+            Ik ga akkoord met de <Link to="/privacy">privacyverklaring</Link>.
+          </label>
+        </div>
         {error && <p style={{ color: "red" }}>{error}</p>}
         <button type="submit">Registreren</button>
       </form>
+    </div>
+  );
+};
+
+const PrivacyNotice = () => {
+  return (
+    <div>
+      <h2>Privacyverklaring</h2>
+      <p>
+        Wij verzamelen en verwerken jouw e-mailadres en wachtwoord om je toegang te geven tot onze applicatie. 
+        Je gegevens worden beveiligd opgeslagen en niet gedeeld met derden. Voor meer informatie, neem contact met ons op.
+      </p>
     </div>
   );
 };
